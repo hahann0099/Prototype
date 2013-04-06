@@ -74,14 +74,13 @@ public int createTeacher (Entity entity)
 }
 public int createCourse (Entity entity)
 {
-	success = this.template.update("insert into course (studentID, teacherID, Name, Date, Term, Start, End, Price) values (?,?,?,?,?,?,?,?)", new Object[]
-			{entity.getCourse().getstudentID(),
-			entity.getCourse().getteacherID(),
+	success = this.template.update("insert into course (teacherID, Name, Date, Term, Start, End, Price) values (?,?,?,?,?,?,?)", new Object[]
+			{entity.getCourse().teacher.getTeacherID(),
 			entity.getCourse().getName(),
 			entity.getCourse().getDate(),
 			entity.getCourse().getTerm(),
-			entity.getCourse().Start(),
-			entity.getCourse().End(),
+			entity.getCourse().getStart(),
+			entity.getCourse().getEnd(),
 			entity.getCourse().getPrice()});
 	return success;
 }
