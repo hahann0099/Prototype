@@ -13,7 +13,7 @@ String term;
 int start;
 int end;
 double price;
-Teacher teacher;
+public Teacher teacher;
 int classID;
 ArrayList students;
 public java.sql.Date getDate() {
