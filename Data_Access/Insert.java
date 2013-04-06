@@ -65,4 +65,11 @@ public int insertInvoice(Entity entity)
 			entity.getInvoice().getCity()});
 	return success;
 }
+public int createTeacher (Entity entity)
+{
+	success = this.template.update("insert into teacher (First, Last) values (?,?)", new Object[]
+			{entity.getTeacher().getFirst(),
+			entity.getTeacher().getLast(),});
+	return success;
+}
 }
