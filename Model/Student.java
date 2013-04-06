@@ -6,7 +6,7 @@ public class Student {
 String first;
 String last;
 int age;
-ArrayList classes;
+ArrayList <Course> classes;
 String gender;
 String danceExp;
 String cardNo;
@@ -50,10 +50,10 @@ public int getAge() {
 public void setAge(int age) {
 	this.age = age;
 }
-public ArrayList getClasses() {
+public ArrayList<Course> getClasses() {
 	return classes;
 }
-public void setClasses(ArrayList classes) {
+public void setClasses(ArrayList<Course> classes) {
 	this.classes = classes;
 }
 public String getGender() {

@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class Update {
 	DataSource source = getDataSource();
 	JdbcTemplate template = new JdbcTemplate(source);
+	Access dataAccess = new Access();
 	int success = 0;
 
 	private static DataSource getDataSource() {
@@ -30,16 +31,21 @@ public class Update {
 							new Integer(entity.getCourse().getclassID()),
 							new Integer(entity.getStudent().getStudentID()) });
 		}
-
-		return success;
-
+	return success;
 	}
-	public int payInvoice(int invoiceID)
+	/*
+	 * Modified: 05/04/13 updating the rest of the payment fields when the invoice is updated
+	 */
+	public int payInvoice(Entity entity)
 	{
 	success = this.template.update(
-					"update invoice set isPaid = 1 where invoiceID = ?",
+					"update invoice set isPaid = 1, code=?, cardNo=?, cardType=?  where invoiceID = ?",
 					new Object[] {
-							new Integer(invoiceID)});
+							
+							new Integer(entity.getPayment().getCode()),
+							new String (entity.getPayment().getCardNo()),
+							new String (entity.getPayment().getCardType()),
+							new Integer(entity.getInvoice().getInvoiceID())});
 	return success;
 	}
 	

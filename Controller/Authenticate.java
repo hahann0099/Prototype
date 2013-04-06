@@ -156,9 +156,13 @@ public class Authenticate extends HttpServlet {
 		int id = Integer.parseInt(request.getParameter("Student"));
 		for (Student stude : entity.getUser().getStudents()) {
 			if (stude.getStudentID() == id) {
+				
+				stude.setClasses(studm.retrieveStudClass(stude.getStudentID()));
 				studentInfos.add(stude);
 			}
 		}
+	
+		
 		newSession.setAttribute("studentInfos", studentInfos);
 		RequestDispatcher dispatcher = request
 				.getRequestDispatcher("/viewStudent.jsp");
@@ -191,7 +195,7 @@ public class Authenticate extends HttpServlet {
 		entity.getStudent().setStudentID(studentInt);
 		entity = userm.UserInfo(entity);
 		entity = coursem.courseInfo(entity);
-		success = newUpdate.updateStudent(entity, "enroll");
+		success = studm.updateStudent(entity); //Modified: 05/04/13 Using business layer for data access
 		if (success > 0) {
 			message = "Student successfully added to the class!";
 			if (invoice > 0) {
@@ -233,7 +237,6 @@ public class Authenticate extends HttpServlet {
 				.toString()), Integer.parseInt(monthdayyear[1].toString()),
 				Integer.parseInt(monthdayyear[0].toString()));
 	newPayment.setCardNo(request.getParameter("cardNo"));
-		newPayment.setCardNo(request.getParameter("cardNo"));
 			newPayment.setProvince(request.getParameter("province"));
 		newPayment.setSubtotal(entity.getInvoice().getSubtotal());
 		newPayment.setTax(entity.getInvoice().getTax());
@@ -248,7 +251,7 @@ public class Authenticate extends HttpServlet {
 		newPayment.setExpiry(cexpiry);
 		entity.setPayment(newPayment);
 		success = paym.processPayment(entity); //Added: 05/04/13 Inserts a payment into the payment table, if its successful, continues
-		paym.payInvoice(entity.getInvoice().getInvoiceID());
+		paym.payInvoice(entity);
 		if (success > 0)
 		{
 			message = "Payment Received!";
@@ -348,18 +351,21 @@ public class Authenticate extends HttpServlet {
 			}
 			}
 				}
+			/* Added: 05/04/13 Allows the user to view their paid invoices
+			 * 
+			 * */
 			if(keyword.equalsIgnoreCase("View Paid"))
 				{
 		int vid = Integer.parseInt(request.getParameter("pInvoice"));
-		out.println(entity.getUser().getPaidInvoices().size());
 			for (Invoice pinv : entity.getUser().getPaidInvoices()) {
 			if (pinv.getInvoiceID() == vid) {
-				
+				pinv.setUserID(entity.getUser().getUserID());
 				String xml = paym.genInvoice(pinv);
 				out.println(xml);
-				
+			
 			}
 			} 
+				}
 				if(keyword.equalsIgnoreCase("Pay"))
 				{
 					int pid = Integer.parseInt(request.getParameter("Invoice"));
@@ -369,7 +375,7 @@ public class Authenticate extends HttpServlet {
 		dispatcher.forward(request, response);
 				}
 				}
-				}
+				
 		
 		
 	

@@ -37,9 +37,9 @@ public int processPayment(Entity entity)
 	newInsert.insertPayment(entity);
 	return inserted;
 }
-public int payInvoice (int invoiceID)
+public int payInvoice (Entity entity)
 {
-	updated = newUpdate.payInvoice(invoiceID);
+	updated = newUpdate.payInvoice(entity);
 	return updated;
 }
 public Entity retrieveInvoices(Entity entity)

@@ -8,7 +8,13 @@ Course course = new Course();
 Retrieval retrieval = new Retrieval();
 Payment payment = new Payment();
 Invoice invoice = new Invoice();
-
+int success = 0;
+public int getSuccess() {
+	return success;
+}
+public void setSuccess(int success) {
+	this.success = success;
+}
 public Invoice getInvoice() {
 	return invoice;
 }

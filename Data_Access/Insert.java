@@ -57,9 +57,9 @@ public int insertStudent(Entity entity)
 }
 public int insertInvoice(Entity entity)
 {
-	success = this.template.update("insert into invoice (userID, First, Last, Subtotal, Tax, Total, Province, City ) values (?,?,?,?,?,?,?,?)", new Object[]
+	success = this.template.update("insert into invoice (userID, First, Last, address, Subtotal, Tax, Total, Province, City ) values (?,?,?,?,?,?,?,?,?)", new Object[]
 			{entity.getUser().getUserID(), entity.getInvoice().getFirst(), 
-			entity.getInvoice().getLast(),
+			entity.getInvoice().getLast(), entity.getUser().getAddress(),
 			entity.getInvoice().getSubtotal(), entity.getInvoice().getTax(), 
 			entity.getInvoice().getTotal(), entity.getInvoice().getProvince(), 
 			entity.getInvoice().getCity()});

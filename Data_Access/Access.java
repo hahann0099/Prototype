@@ -85,6 +85,35 @@ public class Access {
 				entity.setCourse(course);
 				return entity;
 	}
+		/*Added: 05/04/13 
+	 * Gets the student's class and assigns it to an array
+	 */
+	public ArrayList<Course> queryCourse(int studentID) {
+		
+			ArrayList<Course> wipe = new ArrayList();
+			ArrayList<Course> classID = new ArrayList();
+			String sql = "SELECT classID FROM student WHERE studentID = "
+					+ studentID;
+			List<Map<String, Object>> rows = template.queryForList(sql);
+			for (Map row : rows) {
+				Course newClassID = new Course();
+				newClassID.setclassID((Integer)row.get("classID"));
+				classID.add(newClassID);
+			}
+			
+			for (Course id:classID ) {
+				String sql2 = "SELECT * FROM class WHERE classID= ?";
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				Course newClass = (Course) template.queryForObject(sql2,
+						new Object[] { id.getclassID() },
+						new BeanPropertyRowMapper(Course.class));
+				wipe.add(newClass);
+			}
+			
+	
+		return wipe;
+	}
+	
 	public ArrayList<Course> queryCourses(Entity entity, String keyword) {
 		ArrayList<Course> courses = new ArrayList();
 		if (keyword.equals("allCourses")) {
@@ -128,6 +157,7 @@ public class Access {
 				invoice.setLast(row.get("Last").toString());
 				invoice.setCardNo(row.get("cardNo").toString());
 				invoice.setCardType(row.get("cardType").toString());
+				invoice.setCode((Integer)row.get("code")); //Added: 05/04/13 grabs the card code
 				invoice.setSubtotal((Double) row.get("Subtotal"));
 				invoice.setTax((Double) row.get("Tax"));
 				invoice.setTotal((Double)row.get("Total"));
@@ -135,6 +165,7 @@ public class Access {
 			}
 			return invoices;
 	}
+	
 	public Entity queryStudents(Entity entity, String keyword) {
 		if (keyword.equals("userStudents")) {
 			ArrayList<Student> wipe = new ArrayList();
