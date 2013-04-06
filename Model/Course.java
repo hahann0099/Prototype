@@ -72,4 +72,9 @@ public int getEnd() {
 public void setEnd(int end) {
 	this.end = end;
 }
+public void reverseDate(){
+	year = date.getYear();
+	month = date.getMonth();
+	day = date.getDay();
+}
 }
