@@ -307,4 +307,22 @@ public class Access {
 
 		return teacher;
 	}
+		public ArrayList<Course> getAllCourse()
+	{
+		ArrayList<Course> courses = new ArrayList();
+		
+		String sql = "SELECT * from course";
+		List<Map<String, Object>> rows = template.queryForList(sql);
+		for (Map row: rows){
+			Course course = new Course();
+			course.setclassID((int)row.get("classID"));
+			course.setDate((Date)row.get("Date"));
+			course.setName((String)row.get("Name"));
+			course.setTerm((String)row.get("Term"));
+			course.setPrice((double)row.get("Price"));
+			course.setTeacher(getTeacher((String)row.get("teacherID")));
+			course.setStart((int)row.get("Start"));
+		}
+		return courses;
+	}
 }
