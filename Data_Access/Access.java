@@ -287,5 +287,24 @@ public class Access {
 				invoices.add(invoice);
 				}
 			return invoices;
-}
+	}
+	public Teacher getTeacher(String id){
+		PreparedStatement query = null;
+		Teacher teacher = new Teacher();
+		String sql = "SELECT * from teacher WHERE teacherID = ?";
+		try{
+			query.setString(1, id);
+			query = conn.prepareStatement(sql);
+			ResultSet rs = query.executeQuery();
+			teacher.setTeacherID(rs.getInt("teacherID"));
+			teacher.setFirst(rs.getString("First"));
+			teacher.setLast("Last");
+		}
+		catch (SQLException e) {
+		e.printStackTrace();
+		}
+
+
+		return teacher;
+	}
 }
