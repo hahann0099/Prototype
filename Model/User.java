@@ -14,10 +14,19 @@ String homePhone;
 String city; 
 String emerContact;
 String postal;
+String emerPhone;
+String workPhone;
 int userID;
 ArrayList<Invoice> invoices = new ArrayList<Invoice>();
 ArrayList<Invoice> paidInvoices = new ArrayList<Invoice>();
+ArrayList<String> errors = new ArrayList<String>();
 
+public ArrayList<String> getErrors() {
+	return errors;
+}
+public void setErrors(ArrayList<String> errors) {
+	this.errors = errors;
+}
 public ArrayList<Invoice> getPaidInvoices() {
 	return paidInvoices;
 }
@@ -85,8 +94,6 @@ public String getWorkPhone() {
 public void setWorkPhone(String workPhone) {
 	this.workPhone = workPhone;
 }
-String emerPhone;
-String workPhone;
 public String getUsername() {
 	return username;
 }
