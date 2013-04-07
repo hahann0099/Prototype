@@ -16,6 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import model.Course;
+import model.Entity;
+import model.Invoice;
+import model.Payment;
+import model.Student;
+import model.User;
+
 import org.apache.log4j.Logger;
 
 import business.manageCourse;
@@ -23,15 +30,11 @@ import business.managePayment;
 import business.manageStudent;
 import business.manageTeacher;
 import business.manageUser;
-
+import business.validatePayment;
+import business.validateStudent;
+import business.validateUser;
 import data_access.Access;
 import data_access.Update;
-import model.Course;
-import model.Entity;
-import model.Invoice;
-import model.Payment;
-import model.Student;
-import model.User;
 
 /**
  * Servlet implementation class Login
@@ -47,6 +50,7 @@ public class Authenticate extends HttpServlet {
 	ArrayList<Course> courses = new ArrayList<Course>();
 	ArrayList<Invoice> invoices = new ArrayList<Invoice>();
 	ArrayList<Invoice> pInvoices = new ArrayList<Invoice>();
+	ArrayList<String> errors = new ArrayList<String>();
 	int success = 0;
 	int invoice = 0;
 	int userID;
@@ -62,13 +66,19 @@ public class Authenticate extends HttpServlet {
 	Access dataAccess = new Access();
 	Update newUpdate = new Update();
 	Student student = new Student();
+	Student tempStudent = new Student();
 	Course course = new Course();
+	User tempUser = new User();
 	Payment newPayment = new Payment();
+	Payment tempPayment = new Payment();
 	manageUser userm = new manageUser();
 	manageTeacher teachm = new manageTeacher();
 	manageStudent studm = new manageStudent();
 	manageCourse coursem = new manageCourse();
 	managePayment paym = new managePayment();
+	validateUser validate = new validateUser();
+	validateStudent validateS = new validateStudent();
+	validatePayment validateP = new validatePayment();
 	private static final Logger logger = Logger.getLogger(Authenticate.class);
 
 	/**
@@ -115,10 +125,22 @@ public class Authenticate extends HttpServlet {
 		}
 
 	}
-
+/*
+	 * Modified: 06/04/13 Error validation 
+	 */
 	public void Register(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession newSession = request.getSession();
+		PrintWriter out = response.getWriter();
+		tempUser = new User();
+		tempUser =validate.validUser(request.getParameter("first"), request.getParameter("last"),
+		request.getParameter("email"), request.getParameter("cEmail"),request.getParameter("phone"), 
+		request.getParameter("wPhone"),request.getParameter("pass"), request.getParameter("cPass"),request.getParameter("emer"),
+		request.getParameter("emerP"), request.getParameter("postal"),
+		request.getParameter("address"));
+		
+		if (tempUser.getErrors().size() == 0)
+		{
 		newUser.setFirst(request.getParameter("first"));
 		newUser.setLast(request.getParameter("last"));
 		newUser.setAddress(request.getParameter("address"));
@@ -129,18 +151,31 @@ public class Authenticate extends HttpServlet {
 		newUser.setProvince(request.getParameter("province"));
 		newUser.setPassword(request.getParameter("pass"));
 		newUser.setEmerContact(request.getParameter("emer"));
+		newUser.setWorkPhone("wPhone");
 		newUser.setPostal(request.getParameter("postal"));
 		entity.setUser(newUser);
 		success = userm.createUser(entity);
 		if (success > 0) {
 			registered = "Account Successfully Created! Please Login.";
 		}
-
+newSession.setAttribute("Registered", registered);
 		RequestDispatcher dispatcher = request
-				.getRequestDispatcher("/userLogin.html");
+				.getRequestDispatcher("/userLogin.jsp");
 		dispatcher.forward(request, response);
-		newSession.setAttribute("Registered", registered);
-	}
+		
+		}
+		else 
+		{
+			
+		
+			newSession.setAttribute("tempUser", tempUser);
+			RequestDispatcher dispatcher = request
+				.getRequestDispatcher("/Register.jsp");
+		dispatcher.forward(request, response); 
+		}
+		
+	} 
+	
 	public void payInvoice(HttpServletRequest request,
 			HttpServletResponse response)
 	{
@@ -227,9 +262,20 @@ public class Authenticate extends HttpServlet {
 		dispatcher.forward(request, response);
 
 	}
+	/*
+	 * Modified: 06/04/13 Error validation 
+	 */
 	public void processPayment(HttpServletRequest request,
 			HttpServletResponse response) throws ParseException, ServletException, IOException
 	{
+		tempPayment = new Payment();
+		tempPayment = validateP.validate(request.getParameter("first"), request.getParameter("last"),
+				request.getParameter("address"),request.getParameter("postal"),
+				request.getParameter("cardNo"),request.getParameter("code"));
+		if (tempPayment.getErrors().size() == 0)
+		{
+			
+		
 		String expiry = request.getParameter("expiry");
 		monthdayyear = expiry.toString().split("-");
 		@SuppressWarnings("deprecation")
@@ -271,24 +317,46 @@ public class Authenticate extends HttpServlet {
 			RequestDispatcher dispatcher = request
 				.getRequestDispatcher("/Invoices.jsp");
 		dispatcher.forward(request, response);
+		
 	}
+		else
+		{
+			request.setAttribute("tempPayment", tempPayment);
+				RequestDispatcher dispatcher = request
+				.getRequestDispatcher("/addStudent.jsp");
+		dispatcher.forward(request, response);
+		}
+	}
+	/*
+	 * Modified: 06/04/13 Error validation 
+	 */
 	public void addStudent(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			ParseException {
-
+		HttpSession newSession = request.getSession();
+		tempStudent = new Student();
 		PrintWriter out = response.getWriter();
 		String name = request.getParameter("Name");
-		String dob = request.getParameter("DOB");
+		
 
 		firstLast = name.toString().split(" ");
+		
+		tempStudent = validateS.validate(firstLast[0], firstLast[1], request.getParameter("danceExp"),
+				request.getParameter("card"), request.getParameter("healthCon"));
+	
+		
+		if(tempStudent.getErrors().size() == 0)
+		{
+		String dob = request.getParameter("DOB");
 		monthdayyear = dob.toString().split("-");
 		@SuppressWarnings("deprecation")
 		java.sql.Date date = new java.sql.Date(Integer.parseInt(monthdayyear[2]
 				.toString()), Integer.parseInt(monthdayyear[1].toString()),
 				Integer.parseInt(monthdayyear[0].toString()));
+		
 		student.setFirst(firstLast[0]);
 		student.setLast(firstLast[1]);
-
+		
 		student.setAge(Calendar.getInstance().get(Calendar.YEAR)
 				- Integer.parseInt(monthdayyear[2]));
 		student.setDOB(date);
@@ -308,7 +376,15 @@ public class Authenticate extends HttpServlet {
 		if (success > 0) {
 			pullInfo(request, response);
 		}
-
+		}
+		else
+		{
+			request.setAttribute("tempStudent", tempStudent);
+			RequestDispatcher dispatcher = request
+				.getRequestDispatcher("/addStudent.jsp");
+		dispatcher.forward(request, response);
+		}
+		
 	}
 	protected void invoiceView(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException
