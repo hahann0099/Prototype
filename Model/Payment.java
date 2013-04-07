@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Payment {
 String first;
 String last;
@@ -16,7 +18,14 @@ String city;
 int paymentID;
 int userID;
 double tax;
+ArrayList <String> errors = new ArrayList<String>();
 
+public ArrayList<String> getErrors() {
+	return errors;
+}
+public void setErrors(ArrayList<String> errors) {
+	this.errors = errors;
+}
 public String getPostal() {
 	return postal;
 }
