@@ -386,6 +386,46 @@ newSession.setAttribute("Registered", registered);
 		}
 		
 	}
+	public void addClass((HttpServletRequest request,
+		HttpServletResponse response) throws ServletException, IOException,
+		ParseException) {
+			HttpSession newSession = request.getSession();
+			tempClass = new Course();
+			PrintWriter out = response.getWriter();
+			tempClass.setTeacherName  = request.getParameter("teacherName"); 
+			tempClass.setName = request.getParameter("courseName");
+                        tempClass.setTerm = request.getParameter("term");
+                        tempClass.setDuration = request.getParameter("duration");
+                        tempClass.setPrice = request.getParameter("price");
+                        
+                        String start = request.getParameter("start");
+			monthdayyear = start.toString().split("-");
+			                        
+                        int year = Calendar.getInstance().YEAR;
+			int month = Calendar.getInstance().MONTH;
+			int day = Calendar.getInstance().DAY_OF_MONTH;
+			java.sql.Date date = new java.sql.Date(Integer.parseInt(monthdayyear[2]
+				.toString()), Integer.parseInt(monthdayyear[1].toString()),
+				Integer.parseInt(monthdayyear[0].toString()));
+			tempClass.setStart(date);
+                        
+                        java.sql.Date date = new java.sql.Date(Integer.parseInt(monthdayyear[2]
+				.toString()), Integer.parseInt(monthdayyear[1].toString()),
+				Integer.parseInt(monthdayyear[0].toString()));
+				
+			entity.setClass(tempClass);
+
+			success = coursem.addClass(entity);
+				
+			if (success > 0) pullInfo(request, response);
+			else
+			{
+				request.setAttribute("tempClass", tempClass);
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/addCourse.jsp");
+				dispatcher.forward(request, response);
+			}
+		}
+	
 	protected void invoiceView(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException
 	{
