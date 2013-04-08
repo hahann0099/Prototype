@@ -14,10 +14,17 @@ int start;
 int end;
 double price;
 public Teacher teacher;
+public String teacherName;
 int classID;
 ArrayList students;
 public java.sql.Date getDate() {
 	return date;
+}
+public void setTeacherName(String e){
+	this.teacherName = e;
+}
+public String getTeacherName(void){
+	return teacherName;
 }
 public void setDate(java.sql.Date date) {
 	this.date = date;
