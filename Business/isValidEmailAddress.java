@@ -1,3 +1,5 @@
+package business;
+
 public static boolean isValidEmailAddress(String email) {
    boolean result = true;
    try {
